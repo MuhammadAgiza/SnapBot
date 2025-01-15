@@ -1,18 +1,23 @@
 {
   "name": "snapbot",
   "version": "1.0.0",
-  "description": "A bot that automates snapchat ",
-  "main": "index.js",
-  "devDependencies": {},
+  "description": "A bot that automates Snapchat",
+  "main": "src/index.ts",
   "scripts": {
-    "bot": "node index.js"
+    "bot": "ts-node src/index.ts"
   },
-  "author": "Roger Rodrigues",
+  "author": "Muhammad Agiza",
+  "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "puppeteer": "^23.7.1",
+    "dotenv": "^16.4.7",
+    "puppeteer": "^24.1.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2"
   },
-  "license": "ISC"
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3",
+    "@types/node": "^22.10.6",
+    "@types/dotenv": "^8.2.3"
+  }
 }

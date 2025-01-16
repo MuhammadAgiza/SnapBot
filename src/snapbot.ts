@@ -5,6 +5,7 @@ import { Browser, Page, LaunchOptions } from "puppeteer";
 import Stealth from "puppeteer-extra-plugin-stealth";
 import { Credentials, SnapOptions } from "./types";
 import path from "path";
+import logger from './logger';
 
 puppeteer.use(Stealth());
 
@@ -26,7 +27,7 @@ export class SnapBot {
 					...options.args || [],
 					'--use-fake-ui-for-media-stream',
 					'--use-fake-device-for-media-stream',
-					`--use-file-for-fake-video-capture=${path.resolve("./videoplayback.y4m")}`				]
+					`--use-file-for-fake-video-capture=${path.resolve("./videoplayback.y4m")}`]
 			});
 			const context = await this.browser.createBrowserContext();
 			await context.overridePermissions("https://web.snapchat.com", [
@@ -41,7 +42,7 @@ export class SnapBot {
 				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
 			);
 		} catch (error) {
-			console.error(`Error while Starting Snapchat: ${error}`);
+			logger.error(`Error while Starting Snapchat: ${error}`);
 		}
 	}
 
@@ -54,7 +55,7 @@ export class SnapBot {
 			await this.page?.goto("https://accounts.snapchat.com/accounts/v2/login");
 			await this.page?.waitForNetworkIdle();
 		} catch (error) {
-			console.error(`Error while opening login page: ${error}`);
+			logger.error(`Error while opening login page: ${error}`);
 		}
 		try {
 			const loginBtn = await this.page?.$('input[name="accountIdentifier"]');
@@ -71,7 +72,7 @@ export class SnapBot {
 
 			await this.page?.click("button[type='submit']");
 		} catch (e) {
-			console.log("Username field error:", e);
+			logger.error("Username field error:", e);
 		}
 		try {
 			await this.page?.waitForSelector("#password", {
@@ -80,7 +81,7 @@ export class SnapBot {
 			});
 			await this.page?.type("#password", password, { delay: 100 });
 		} catch (e) {
-			console.log("Password field loading error:", e);
+			logger.error("Password field loading error:", e);
 		}
 
 		await this.page?.click("button[type='submit']");
@@ -89,7 +90,7 @@ export class SnapBot {
 			await this.page?.goto("https://web.snapchat.com/");
 			await this.page?.waitForNavigation();
 		} catch (error) {
-			console.error(`Error while opening snapchat web page: ${error}`);
+			logger.error(`Error while opening snapchat web page: ${error}`);
 		}
 		await delay(1000);
 	}
@@ -107,7 +108,7 @@ export class SnapBot {
 		if (captureButton) {
 			await captureButton.click();
 		} else {
-			console.log("Capture button not found");
+			logger.error("Capture button not found");
 		}
 
 		if (options.caption) {
@@ -154,7 +155,7 @@ export class SnapBot {
 		}
 
 		if (!popupFound) {
-			console.log("No popup found to close after multiple tries.");
+			logger.info("No popup found to close after multiple tries.");
 		}
 	}
 
@@ -198,7 +199,7 @@ export class SnapBot {
 		if (button) {
 			await button.click();
 		}
-		await delay(2000);
+		await delay(2000);  
 
 		try {
 			const buttons = await this.page?.$$("button.c47Sk");
@@ -223,12 +224,12 @@ export class SnapBot {
 			if (sendButton) {
 				await sendButton.click();
 			} else {
-				throw new Error("Capture button not found");
+				throw new Error("Send button not found");
 			}
 
 			await delay(5000);
 		} catch (error) {
-			console.error(`Error in sendToShortcut: ${error}`);
+			logger.error(`Error in sendToShortcut: ${error}`);
 		}
 	}
 
@@ -239,6 +240,7 @@ export class SnapBot {
 
 	async screenshot(path: string): Promise<void> {
 		await this.page?.screenshot({ path });
+		logger.info(`Screenshot saved at ${path}`);
 	}
 
 	async logout(): Promise<void> {

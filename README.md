@@ -8,25 +8,38 @@ SnapBot is a TypeScript-based automation tool for interacting with Snapchat usin
 - **Multiple Accounts**: Supports multiple Snapchat accounts, allowing you to maintain streaks for all of them simultaneously.
 - **Snapstreak Maintenance**: Ensures your snap streaks are never broken by sending snaps on time.
 - **Custom Captions**: Send snaps with captions of your choice, with the potential for dynamic content integration.
+- **Cron Jobs**: Schedule automated tasks to run at specific times, ensuring your snaps are sent on schedule.
 
 ## Installation
 
 1. Clone the repository:
+   ```sh
    git clone https://github.com/muhammadagiza/SnapBot
+   ```
 2. Navigate to the project folder:
+   ```sh
    cd SnapBot
+   ```
 3. Install the necessary dependencies:
+   ```sh
    npm install
+   ```
 4. Copy the `.env.example` file to create a `.env` file:
+   ```sh
    cp .env.example .env
+   ```
 5. Open the `.env` file and add your Snapchat credentials:
+   ```env
    USER_NAME=<Your Snapchat Username>
    USER_PASSWORD=<Your Snapchat Password>
+   ```
 
 ## Usage
 
 To run the bot, use the following command:
+   ```sh
    npm run bot
+   ```
 This command will start SnapBot, logging into Snapchat, capturing a snap, and sending it to your specified contacts.
 
 ## Methods
@@ -42,6 +55,7 @@ The following methods are available in `SnapBot`:
   - `"friends"` for all active friends and best friends,
   - `"groups"` for group chats.
 - `wait(milliseconds)`: Pauses the script for a specified duration.
-- `sendToShortcut(emoji[])` Sends the snap to list of shortcuts.
+- `sendToShortcut(emoji[])`: Sends the snap to a list of shortcuts.
 - `logout()`: Logs out of the current Snapchat account, allowing you to log in with another account without closing the browser.
 - `closeBrowser()`: Closes the browser session.
+- `tryClosePopup(tries)`: Attempts to close popups a specified number of times.

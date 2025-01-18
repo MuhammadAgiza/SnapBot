@@ -2,9 +2,9 @@
 import { SnapBot } from './snapbot';
 import dotenv from 'dotenv';
 import { createUniqueFileName } from './utils';
-import cron from 'node-cron';
 import logger from './logger';
-
+import { TaskQueue } from './TaskQueue';
+import { SnapScheduler } from './SnapScheduler';
 dotenv.config();
 
 const bot = new SnapBot();
@@ -14,29 +14,44 @@ const credentials = {
     password: process.env.USER_PASSWORD || ''
 };
 
+
 async function launchSnap() {
     await bot.launchSnapchat({ headless: true });
     await bot.login(credentials);
     await bot.tryClosePopup(20);
-    // await bot.wait(2000);
-    // await bot.closeBrowser();
+
 }
 
 
-async function sendSnap(caption: string = "", emojis: string[] = ["🥲"]) {
+async function sendSnap(caption: string = "Streak Saver", emojis: string[] = ["🥲"]) {
     await bot.tryClosePopup(20);
     await bot.captureSnap({ caption });
     await bot.screenshot(createUniqueFileName("./screenshots/screenshot.png"));
     await bot.sendToShortcut(emojis);
 }
 
-const blackScreenTask = cron.schedule('*/2 * * * *', () => {
-    logger.info('Sending Snap');
-    sendSnap();
-});
+async function blackScreenSnap() {
+    logger.info('Sending black-screen Snap');
+    await sendSnap("", ["😭"]);
+}
 
-blackScreenTask.start();
+async function dailySnap() {
+    logger.info('Sending score saving Snap');
+    await sendSnap("Score Saver", ["😭"]);
+}
+
 
 launchSnap();
 
+const taskQueue = new TaskQueue();
+const snapScheduler = new SnapScheduler(taskQueue);
+
+snapScheduler.addTask({
+    name: 'Black Screen Snap',
+    cronExpression: '*/5 * * * *',
+    action: blackScreenSnap
+});
+
+
+taskQueue.processQueue();
 

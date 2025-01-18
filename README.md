@@ -8,7 +8,11 @@ SnapBot is a TypeScript-based automation tool for interacting with Snapchat usin
 - **Multiple Accounts**: Supports multiple Snapchat accounts, allowing you to maintain streaks for all of them simultaneously.
 - **Snapstreak Maintenance**: Ensures your snap streaks are never broken by sending snaps on time.
 - **Custom Captions**: Send snaps with captions of your choice, with the potential for dynamic content integration.
-- **Cron Jobs**: Schedule automated tasks to run at specific times, ensuring your snaps are sent on schedule.
+- **Cron Jobs**: Schedule automated tasks to run at specific times, ensuring your snaps are sent on schedule while avoiding collisions between tasks.
+- **Screenshot Capture**: Takes and saves screenshots of the current screen state.
+- **Send to Shortcuts**: Sends snaps to a list of shortcuts.
+- **Popup Handling**: Attempts to close popups a specified number of times.
+- **Error Logging**: Logs errors and important information using Winston.
 
 ## Installation
 
@@ -59,3 +63,24 @@ The following methods are available in `SnapBot`:
 - `logout()`: Logs out of the current Snapchat account, allowing you to log in with another account without closing the browser.
 - `closeBrowser()`: Closes the browser session.
 - `tryClosePopup(tries)`: Attempts to close popups a specified number of times.
+
+## Scheduling Tasks
+
+SnapBot includes a task scheduler that allows you to schedule tasks using cron expressions. The scheduler also avoids collisions between tasks by managing a queue and ensuring tasks are executed based on their priority.
+
+
+To add and start tasks, use the `SnapScheduler` class:
+
+```ts
+const taskQueue = new TaskQueue();
+const snapScheduler = new SnapScheduler(taskQueue);
+
+snapScheduler.addTask({
+    name: 'Black Screen Snap',
+    cronExpression: '*/5 * * * *',
+    action: blackScreenSnap
+});
+
+
+taskQueue.processQueue();
+```
